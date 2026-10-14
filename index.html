@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My Marketplace</title>
+<style>body{font-family:system-ui,sans-serif;margin:0;background:#faf8f5;color:#1b2a29}header{background:#0f5c57;color:#fff;padding:16px;font-size:22px;font-weight:700}main{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:16px}.c{background:#fff;border:1px solid #e6e2da;border-radius:12px;padding:12px}.c small{color:#66726f}.p{font-weight:700;margin-top:6px}s{color:#999;margin-left:6px;font-weight:400}</style></head>
+<body><header>My Marketplace</header><main id="g">Loading…</main>
+<script>
+const SB_URL="https://sxvkmwjexwbykhcysqhe.supabase.co";
+const KEY="sb_publishable_hjiJLnW7AhB1fbFrblSqXg_j_l7f0I_";
+fetch(SB_URL+"/rest/v1/products?select=name,price,mrp,seller_name,categories(name)&status=eq.live&order=id",{headers:{apikey:KEY,Authorization:"Bearer "+KEY}})
+.then(r=>r.json()).then(d=>{
+const g=document.getElementById("g");
+if(!Array.isArray(d)){g.textContent="Could not load products.";return}
+g.innerHTML=d.map(p=>`<div class="c"><b>${p.name}</b><br><small>${p.categories?p.categories.name:""} · by ${p.seller_name}</small><div class="p">₹${p.price.toLocaleString("en-IN")}<s>₹${p.mrp}</s></div></div>`).join("")})
+.catch(()=>{document.getElementById("g").textContent="Could not load products."});
+</script></body></html>
