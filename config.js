@@ -1,0 +1,2 @@
+const SB_URL="YOUR_PROJECT_URL";
+const KEY="YOUR_PUBLIC_KEY";
