@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mohalla Mart (Early Demo)</title>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#f7f1e5"><link rel="apple-touch-icon" href="/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f1e5;--surf:#fffdf8;--ink:#0f1f1a;--mut:#5d6b64;--line:#e6dcc8;--brand:#116b5b;--sun:#f5aa1c;--rose:#d6336c;--ok:#1f8a4c;color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.45 "DM Sans",system-ui,sans-serif;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+header{position:sticky;top:0;z-index:20;background:var(--bg);color:var(--brand);padding:calc(10px + env(safe-area-inset-top,0px)) 14px 12px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{font:800 22px "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.4px}
+.cartb{position:relative;border:1px solid var(--line);background:var(--surf);color:var(--brand);border-radius:999px;padding:7px 14px;font-weight:700}
+.cartb b{background:var(--sun);color:#0f1f1a;border-radius:999px;padding:1px 7px;margin-left:6px;font-size:13px}
+.search input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;background:var(--surf);color:var(--ink)}
+.tick{background:#0f1f1a;color:#f7f1e5;overflow:hidden;white-space:nowrap;font-size:13px;font-weight:700;letter-spacing:.4px}
+.trk{display:inline-block;padding:9px 0;animation:mv 24s linear infinite}
+.trk span{margin:0 26px}
+@keyframes mv{to{transform:translateX(-50%)}}
+.art{overflow:hidden}
+.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.em{font-size:60px}
+.off{z-index:2}
+.hrt{position:absolute;right:8px;top:8px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#444;font-size:19px;display:grid;place-items:center}
+.hrt[aria-pressed=true]{color:var(--rose)}
+.wa{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:26;width:54px;height:54px;border-radius:50%;background:#25d366;color:#fff;font-size:28px;display:none;place-items:center;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.lnk{display:block;margin:10px 0;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surf);color:var(--brand);font-weight:700;text-decoration:none}
+.banner.photo{background:linear-gradient(90deg,rgba(15,31,26,.72),rgba(15,31,26,.15)),var(--bi) center/cover;color:#fff;border:0;min-height:230px}
+.banner.photo h1{color:#fff}.banner.photo span,.banner.photo em{display:none}
+.hero{margin:12px 14px 0;border-radius:16px;padding:20px 18px;background:var(--brand);color:#fff;position:relative;overflow:hidden}
+.hero small{letter-spacing:1.2px;opacity:.85;font-weight:500}
+.hero h1{font:800 27px/1.15 "Bricolage Grotesque",system-ui,sans-serif;margin:8px 0 8px}
+.hero p{margin:0 0 16px;opacity:.92}
+.hero button{width:100%;text-align:left;border:0;background:#fff;color:var(--brand);border-radius:12px;padding:13px 16px;font-weight:700;font-size:16px}
+.hero.photo{background:linear-gradient(rgba(15,31,26,.65),rgba(15,31,26,.65)),var(--bi) center/cover}
+.tg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 14px}
+@media(min-width:640px){.tg{grid-template-columns:repeat(4,1fr)}}
+.tile{border:0;background:none;padding:0;text-align:center;font-weight:700;color:var(--ink)}
+.tile .tp{position:relative;aspect-ratio:1/1;border-radius:14px;display:grid;place-items:center;font-size:64px;overflow:hidden;border:1px solid var(--line)}
+.tile .tp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile .l{display:block;margin-top:8px}
+.tile small{display:block;color:var(--mut);font-weight:400;font-size:12px}
+.pills{display:flex;gap:8px;overflow-x:auto;padding:0 14px 12px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{border:1px solid var(--line);background:var(--surf);border-radius:999px;padding:7px 14px;white-space:nowrap;font-weight:500;color:var(--ink)}
+.pill[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hr{display:flex;gap:8px;align-items:center}
+.acct{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surf);color:var(--brand);font-weight:800;font-size:17px}
+.cta{width:100%;border:0;background:var(--brand);color:#fff;border-radius:12px;padding:13px;font-weight:700;font-size:16px;margin-top:10px}
+.cta:disabled{opacity:.6}
+.fld{display:block;margin:10px 0}.fld span{display:block;font-size:13px;color:var(--mut);margin-bottom:3px}
+.fld select{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit;background:var(--surf);color:var(--ink)}
+.pv{display:none;width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin-top:8px}
+.mp{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.mp img{width:56px;height:56px;border-radius:10px;object-fit:cover;background:var(--surf);flex:none}
+.mp small{color:var(--mut)}.st{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;background:#fbeccb;color:#7a4b00}.st.live{background:#e8f3ef;color:var(--brand)}
+.ap{border:0;border-radius:8px;padding:7px 12px;font-weight:700;font-size:13px;background:var(--brand);color:#fff;display:block;width:100%}
+.ap.no{background:var(--surf);color:var(--rose);border:1px solid var(--line);margin-top:6px}.ap:disabled{opacity:.5}
+.ah{font-size:16px;margin:16px 0 2px}.sb a{color:var(--brand);font-weight:600}
+.ft{padding:18px 14px 96px;text-align:center;font-size:13px;color:var(--mut)}.ft .lnkb{font-weight:600;font-size:13px}
+.lg h4{margin:16px 0 4px;font-size:15px}.lg p{font-size:14px;color:var(--mut);margin:0 0 6px;line-height:1.55}
+.fld input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit;background:var(--surf);color:var(--ink)}
+.seg{display:flex;gap:8px;margin:12px 0 4px}
+.err{color:var(--rose);font-size:14px;min-height:20px;margin-top:6px}
+.lnkb{background:none;border:0;padding:0;color:var(--brand);font-weight:700;text-decoration:underline;font-size:inherit}
+.rb{display:inline-block;background:#e8f3ef;color:var(--brand);border-radius:999px;padding:2px 12px;font-size:13px;font-weight:700}
+.demo{background:#fbeccb;color:#7a4b00;padding:8px 14px;font-size:13px}
+.cats{display:flex;gap:16px;overflow-x:auto;padding:16px 14px 8px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:64px;font-weight:500;font-size:13px}
+.cat i{font-style:normal;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--surf);border:2px solid var(--line)}
+.cat[aria-pressed=true] i{border-color:var(--sun);box-shadow:0 0 0 3px rgba(244,168,29,.25)}
+.cat[aria-pressed=true]{font-weight:700}
+.banner{margin:10px 14px;border-radius:16px;padding:22px 18px;color:var(--brand);background:#f1e8d4;border:1px solid var(--line);position:relative;overflow:hidden}
+.banner h1{font:800 26px/1.1 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 6px;max-width:12ch}
+.banner p{margin:0 0 12px;max-width:28ch}
+.banner button{border:0;background:var(--sun);color:#0f1f1a;border-radius:999px;padding:9px 18px;font-weight:700}
+.banner em{position:absolute;right:6px;top:10px;font-size:38px;font-style:normal}
+.banner span{position:absolute;right:14px;bottom:6px;font-size:78px;opacity:.9}
+.sec{display:flex;justify-content:space-between;align-items:baseline;padding:14px 14px 8px}
+.sec h2{margin:0;font:800 19px "Bricolage Grotesque",system-ui,sans-serif}
+.sec small{color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 14px}
+@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(5,1fr)}body{max-width:1100px;margin:0 auto}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.art{position:relative;aspect-ratio:1/1.05;display:grid;place-items:center;font-size:60px}
+.off{position:absolute;left:8px;top:8px;background:var(--rose);color:#fff;border-radius:6px;padding:2px 7px;font-size:12px;font-weight:700}
+.info{padding:10px 11px 12px;display:flex;flex-direction:column;gap:2px;flex:1}
+.nm{font-weight:500;line-height:1.3}
+.by{font-size:12px;color:var(--mut)}
+.pr{font-weight:700;font-size:17px;margin-top:2px}
+.pr s{color:var(--mut);font-weight:400;font-size:13px;margin-left:6px}
+.add{margin-top:8px;border:1.5px solid var(--brand);background:none;color:var(--brand);border-radius:10px;padding:8px;font-weight:700}
+.msg{grid-column:1/-1;text-align:center;color:var(--mut);padding:36px 0}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surf);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px))}
+nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--mut);min-width:64px}
+nav button span{font-size:21px}
+nav button.on{color:var(--brand);font-weight:700}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;display:none}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:80%;background:var(--bg);z-index:31;border-radius:18px 18px 0 0;display:none;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+.scrim.on,.sheet.on{display:flex}
+.sh{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+.sh h2{margin:0;font:800 20px "Bricolage Grotesque",system-ui,sans-serif}
+.x{border:0;background:var(--surf);width:34px;height:34px;border-radius:50%}
+.sb{overflow-y:auto;padding:6px 16px;flex:1}
+.ln{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.ln div{flex:1}.ln small{color:var(--mut)}
+.q{display:flex;align-items:center;gap:8px}.q button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--surf)}
+.sf{padding:12px 16px;border-top:1px solid var(--line);background:var(--surf)}
+.sf p{margin:6px 0;color:var(--mut);font-size:13px}
+.tot{display:flex;justify-content:space-between;font-weight:700;font-size:18px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s;font-size:14px}
+.toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.trk{animation:none}*{transition:none!important;scroll-behavior:auto!important}}
+</style></head>
+<body>
+<header>
+<div class="top"><div class="logo">Mohalla Mart</div><div class="hr"><button class="acct" id="ab" aria-label="Account">👤</button><button class="cartb" id="cb" aria-label="Open cart">Cart<b id="cn">0</b></button></div></div>
+<label class="search"><input id="q" type="search" placeholder="Search kurtas, jhumkas, gifts…" aria-label="Search products"></label>
+</header>
+<div class="tick" aria-label="Free delivery over 999 rupees. Sold by local makers."><div class="trk"><span>🚚 Free delivery over ₹999</span><span>🧵 Sold by local makers</span><span>🛍️ New styles every week</span><span>🚚 Free delivery over ₹999</span><span>🧵 Sold by local makers</span><span>🛍️ New styles every week</span></div></div>
+<div class="demo">Early demo: products and sellers shown are samples. Real makers are joining soon.</div>
+<section class="hero"><small>MOHALLA MART</small><h1>Your Neighbourhood. Your Favourite Finds.</h1><p>Discover fashion and local finds from independent sellers, and support the people who make your neighbourhood special.</p><button id="shop">Explore Products →</button></section>
+<section id="tiles" aria-label="Shop by category" style="margin-top:6px"></section>
+<div class="sec"><h2 id="ttl">Trending now</h2><small id="cnt"></small></div>
+<div class="pills" id="cats" role="group" aria-label="Filter by category"></div>
+<main class="grid" id="g"><div class="msg">Loading…</div></main>
+
+<footer class="ft"><button class="lnkb" data-lg="terms">Terms of Use</button> · <button class="lnkb" data-lg="returns">Returns &amp; Refunds</button> · <button class="lnkb" data-lg="privacy">Privacy</button><br><span>© Mohalla Mart, Lucknow</span></footer>
+<nav>
+<button class="on" id="n1"><span>🏠</span>Home</button>
+<button id="n2"><span>▦</span>Categories</button>
+<button id="n3"><span>🛒</span>Cart</button>
+<button id="n4"><span>💬</span>Contact</button>
+</nav>
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" aria-live="polite"></aside>
+<a class="wa" id="wa" href="#" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬</a>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="/config.js"></script>
+<script>
+const ICON={kurta:"👗",stole:"🧣",bag:"👜",jhumka:"💍",vase:"🏺",diya:"🪔",cushion:"🛋️",macrame:"🌿",hamper:"🎁",mug:"☕",candle:"🕯️",oil:"🧴",comb:"🪮",lip:"💄"};
+const CATI={All:"✨",Fashion:"👗",Accessories:"💍",Home:"🏺",Gifting:"🎁",Beauty:"💄"};
+const BG={Accessories:"#e4e0f4",Fashion:"#f7d9c4",Home:"#d8e9e4",Gifting:"#f6d0da",Beauty:"#fbe3b8"};
+let P=[],cat="All",q="",cart={},wish=new Set();
+try{wish=new Set(JSON.parse(localStorage.getItem("mm_wish")||"[]"))}catch(e){}
+const saveW=()=>{try{localStorage.setItem("mm_wish",JSON.stringify([...wish]))}catch(e){}};
+const waLink=()=>{const n=(typeof WA_NUMBER==="string"?WA_NUMBER:"").replace(/\D/g,"");return n.length>=10?"https://wa.me/"+n+"?text="+encodeURIComponent("Hi Mohalla Mart"):""};
+const thumb=p=>`<span class="em">${icon(p)}</span>${p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">`:""}<button class="hrt" data-w="${p.id}" aria-label="Save ${esc(p.name)}" aria-pressed="${wish.has(String(p.id))}">${wish.has(String(p.id))?"♥":"♡"}</button>`;
+function contactView(){const w=waLink();sheet(`<div class="sh"><h2>Contact us</h2><button class="x" data-close aria-label="Close">✕</button></div><div class="sb"><p>Questions, or want to sell with us? Message us:</p>${w?`<a class="lnk" href="${w}" target="_blank" rel="noopener">💬 WhatsApp</a>`:""}<a class="lnk" href="https://instagram.com/mohalla.mart" target="_blank" rel="noopener">📷 Instagram @mohalla.mart</a></div>`)}
+const $=s=>document.querySelector(s),inr=n=>"₹"+Number(n).toLocaleString("en-IN");
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const icon=p=>{const n=p.name.toLowerCase();for(const k in ICON)if(n.includes(k))return ICON[k];return CATI[p.cat]||"🛍️"};
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1500)}
+let S=null;try{S=JSON.parse(localStorage.getItem("mm_sess")||"null")}catch(e){}
+const saveS=()=>{try{S?localStorage.setItem("mm_sess",JSON.stringify(S)):localStorage.removeItem("mm_sess")}catch(e){}};
+async function auth(path,body){const r=await fetch(SB_URL+"/auth/v1/"+path,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.msg||j.error_description||j.message||"Something went wrong. Please try again.");return j}
+function setSession(j){const role=S&&S.role;S={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:Date.now()+(j.expires_in||3600)*1000-60000,user:{id:j.user.id,email:j.user.email,name:(j.user.user_metadata||{}).full_name||""},role:role||"buyer"};saveS()}
+async function loadRole(){if(!S)return;const h={apikey:KEY,Authorization:"Bearer "+S.access_token};
+try{const r=await fetch(SB_URL+"/rest/v1/profiles?select=full_name,role&id=eq."+S.user.id,{headers:h});const d=await r.json();if(Array.isArray(d)&&d[0]){S.role=d[0].role;if(d[0].full_name)S.user.name=d[0].full_name}}catch(e){}
+try{const r=await fetch(SB_URL+"/rest/v1/seller_applications?select=shop_name,status&user_id=eq."+S.user.id,{headers:h});const d=await r.json();S.app=(Array.isArray(d)&&d[0])?d[0]:null}catch(e){S.app=null}
+saveS()}
+async function refreshS(){if(!S||Date.now()<S.expires_at)return;try{setSession(await auth("token?grant_type=refresh_token",{refresh_token:S.refresh_token}))}catch(e){S=null;saveS()}}
+function acctBtn(){$("#ab").textContent=S?((S.user.name||S.user.email||"?").trim()[0]||"?").toUpperCase():"👤"}
+const ROLE={buyer:"Buyer",seller:"Seller",admin:"Admin"};
+function authView(mode,msg,kind){kind=kind||"buyer";const sell=mode=="signup"&&kind=="seller";
+sheet(`<div class="sh"><h2>${mode=="login"?"Log in":sell?"Sell on Mohalla Mart":"Create account"}</h2><button class="x" data-close aria-label="Close">✕</button></div>
+<div class="sb"><div class="seg"><button class="pill" aria-pressed="${mode=="login"}" data-am="login">Log in</button><button class="pill" aria-pressed="${mode=="signup"&&!sell}" data-am="signup">Sign up</button><button class="pill" aria-pressed="${sell}" data-ak="seller">Sell with us</button></div>
+<form id="af" data-mode="${mode}" data-kind="${kind}" novalidate>${mode=="signup"?`<label class="fld"><span>Your name</span><input id="an" autocomplete="name" maxlength="60"></label>`:""}
+<label class="fld"><span>Email (this is your login ID)</span><input id="ae" type="email" autocomplete="email" inputmode="email"></label>
+<label class="fld"><span>Password (8 or more characters)</span><input id="ap" type="password" autocomplete="${mode=="login"?"current-password":"new-password"}"></label>
+${sell?`<label class="fld"><span>Shop or brand name</span><input id="ash" maxlength="80"></label><label class="fld"><span>Mobile number (10 digits)</span><input id="aph" inputmode="numeric" maxlength="10" autocomplete="tel"></label><label class="fld"><span>City</span><input id="acy" maxlength="60"></label><p class="by">After you sign up, we review your shop and activate your seller account.</p>`:""}
+<div class="err" id="aerr" role="alert">${esc(msg||"")}</div><button class="cta" type="submit">${mode=="login"?"Log in":sell?"Create seller account":"Create account"}</button></form>
+${mode=="login"?`<p class="by" style="margin-top:14px">Want to sell? <button type="button" class="lnkb" data-ak="seller">Create a seller account</button></p>`:""}</div>`)}
+function acctView(){const u=S.user,a=S.app;let note;
+if(S.role=="admin")note="You are an admin.";
+else if(S.role=="seller")note=`Your seller account${a?" for <b>"+esc(a.shop_name)+"</b>":""} is active. You can add products now. Orders are coming soon.`;
+else if(a&&a.status=="pending")note=`Your seller application for <b>${esc(a.shop_name)}</b> is under review. We will activate it soon.`;
+else if(a&&a.status=="rejected")note=`Your seller application for <b>${esc(a.shop_name)}</b> was not approved. Please message us on WhatsApp.`;
+else note="Order history and checkout are coming soon.";
+sheet(`<div class="sh"><h2>My account</h2><button class="x" data-close aria-label="Close">✕</button></div>
+<div class="sb"><p style="font-size:19px;margin:10px 0 2px"><b>${esc(u.name||"Welcome")}</b></p><p class="by">${esc(u.email)}</p><p><span class="rb">${ROLE[S.role]||"Buyer"}</span></p><p class="by">${note}</p>
+${S.role=="admin"?`<button class="cta" data-adm>Admin panel</button>`:""}
+${S.role=="buyer"&&!a?`<button class="cta" data-apply>Become a seller</button>`:""}
+${S.role=="seller"||S.role=="admin"?`<button class="cta" data-addp>Add a product</button><button class="cta" data-myp style="background:var(--surf);color:var(--brand);border:1.5px solid var(--brand)">My products</button>`:""}
+<button class="cta" data-mo style="background:var(--surf);color:var(--brand);border:1.5px solid var(--brand)">My orders</button>
+${S.role=="seller"||S.role=="admin"?`<button class="cta" data-so style="background:var(--surf);color:var(--brand);border:1.5px solid var(--brand)">Seller orders</button>`:""}
+<button class="cta" data-logout style="background:var(--surf);color:var(--brand);border:1.5px solid var(--brand)">Log out</button></div>`)}
+function applyView(msg){sheet(`<div class="sh"><h2>Become a seller</h2><button class="x" data-close aria-label="Close">✕</button></div>
+<div class="sb"><form id="pf" novalidate><label class="fld"><span>Shop or brand name</span><input id="ash" maxlength="80"></label><label class="fld"><span>Mobile number (10 digits)</span><input id="aph" inputmode="numeric" maxlength="10" autocomplete="tel"></label><label class="fld"><span>City</span><input id="acy" maxlength="60"></label>
+<div class="err" id="aerr" role="alert">${esc(msg||"")}</div><button class="cta" type="submit">Send application</button></form></div>`)}
+const er=m=>{$("#aerr").textContent=m};
+function appVals(){const shop=$("#ash").value.trim(),ph=$("#aph").value.trim(),city=$("#acy").value.trim();
+if(shop.length<2)return er("Please enter your shop or brand name"),null;if(!/^[0-9]{10}$/.test(ph))return er("Please enter a 10-digit mobile number"),null;if(city.length<2)return er("Please enter your city"),null;return{shop,ph,city}}
+async function sendApp(v){await refreshS();const r=await fetch(SB_URL+"/rest/v1/seller_applications",{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+S.access_token,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({user_id:S.user.id,shop_name:v.shop,phone:v.ph,city:v.city})});
+if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(r.status==409||/duplicate/i.test(j.message||"")?"You have already applied.":"Could not send your application. Please check the details and try again.")}}
+async function doApply(){const v=appVals();if(!v)return;const b=$("#pf .cta");b.disabled=true;b.textContent="Please wait…";er("");
+try{await sendApp(v);await loadRole();acctView();toast("Application sent")}catch(x){b.disabled=false;b.textContent="Send application";er(x.message)}}
+async function doAuth(mode,kind){const sell=mode=="signup"&&kind=="seller";const e=$("#ae").value.trim(),p=$("#ap").value,n=mode=="signup"?$("#an").value.trim():"";
+if(mode=="signup"&&!n)return er("Please enter your name");if(!/^\S+@\S+\.\S+$/.test(e))return er("Please enter a valid email");if(p.length<8)return er("Password must be 8 or more characters");
+let v=null;if(sell){v=appVals();if(!v)return}
+const b=$("#af .cta"),label=b.textContent;b.disabled=true;b.textContent="Please wait…";er("");
+try{let j;if(mode=="signup"){j=await auth("signup",{email:e,password:p,data:{full_name:n}});if(!j.access_token){authView("login","Account created. Please check your email to confirm it, then log in"+(sell?" and apply from My account.":"."));return}}else{j=await auth("token?grant_type=password",{email:e,password:p})}
+S=null;setSession(j);let note="";if(sell){try{await sendApp(v)}catch(x){note=x.message}}
+await loadRole();acctBtn();acctView();toast(note||(sell?"Seller application sent":"Welcome"+(S.user.name?", "+S.user.name.split(" ")[0]:"")))}
+catch(x){b.disabled=false;b.textContent=label;er(x.message)}}
+
+let CATS=[],pBlob=null;
+const sh=()=>({apikey:KEY,Authorization:"Bearer "+S.access_token});
+async function addView(msg){await refreshS();if(!S)return authView("login");pBlob=null;
+if(!CATS.length){try{const r=await fetch(SB_URL+"/rest/v1/categories?select=id,name&order=id",{headers:{apikey:KEY,Authorization:"Bearer "+KEY}});const d=await r.json();if(Array.isArray(d))CATS=d}catch(e){}}
+sheet(`<div class="sh"><h2>Add a product</h2><button class="x" data-close aria-label="Close">✕</button></div>
+<div class="sb"><button type="button" class="lnkb" data-acct>← My account</button>
+<form id="prf" novalidate><label class="fld"><span>Product name</span><input id="pn" maxlength="80" placeholder="e.g. Block-print cotton kurta"></label>
+<label class="fld"><span>Category</span><select id="pc"><option value="">Choose a category</option>${CATS.map(c=>`<option value="${c.id}">${esc(LBL[c.name]||c.name)}</option>`).join("")}</select></label>
+<label class="fld"><span>Selling price (₹)</span><input id="pp" inputmode="numeric" maxlength="6"></label>
+<label class="fld"><span>Original price / MRP (₹). Leave empty if there is no discount</span><input id="pm" inputmode="numeric" maxlength="6"></label>
+<label class="fld"><span>Product photo</span><input id="pimg" type="file" accept="image/*"></label><img id="pv" class="pv" alt="Photo preview">
+<p class="by">Your product goes live after we review it.</p>
+<div class="err" id="aerr" role="alert">${esc(msg||"")}</div><button class="cta" type="submit">Submit for review</button></form></div>`)}
+function prepImg(file){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),i=new Image();i.onload=()=>{const r=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*r);c.height=Math.round(i.height*r);c.getContext("2d").drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):no(new Error("x")),"image/jpeg",0.82)};i.onerror=()=>{URL.revokeObjectURL(u);no(new Error("x"))};i.src=u})}
+async function doAddProduct(){await refreshS();if(!S)return authView("login");
+const nm=$("#pn").value.trim(),cid=+$("#pc").value,pr=Math.round(+$("#pp").value),mv=$("#pm").value.trim(),mr=mv?Math.round(+mv):pr;
+if(nm.length<3)return er("Please enter the product name");if(!cid)return er("Please choose a category");if(!(pr>=1&&pr<=500000))return er("Please enter a valid selling price");if(!(mr>=pr))return er("Original price (MRP) cannot be less than the selling price");if(!pBlob)return er("Please add a product photo");
+const b=$("#prf .cta");b.disabled=true;b.textContent="Uploading…";er("");
+try{const path=S.user.id+"/"+Date.now()+"-"+Math.random().toString(36).slice(2,8)+".jpg";
+const up=await fetch(SB_URL+"/storage/v1/object/product-images/"+path,{method:"POST",headers:{...sh(),"Content-Type":"image/jpeg"},body:pBlob});if(!up.ok)throw new Error("Photo upload failed. Please try again.");
+const r=await fetch(SB_URL+"/rest/v1/products",{method:"POST",headers:{...sh(),"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({name:nm,category_id:cid,price:pr,mrp:mr,seller_id:S.user.id,image_url:SB_URL+"/storage/v1/object/public/product-images/"+path})});
+if(!r.ok)throw new Error("Could not save the product. Please try again.");
+pBlob=null;toast("Sent for review");myView()}catch(x){b.disabled=false;b.textContent="Submit for review";er(x.message)}}
+async function myView(){await refreshS();if(!S)return authView("login");
+sheet(`<div class="sh"><h2>My products</h2><button class="x" data-close aria-label="Close">✕</button></div><div class="sb"><button type="button" class="lnkb" data-acct>← My account</button><div id="mpl"><p class="msg">Loading…</p></div></div>`);
+try{const r=await fetch(SB_URL+"/rest/v1/products?select=id,name,price,status,image_url&seller_id=eq."+S.user.id+"&order=id.desc",{headers:sh()});const d=await r.json();if(!Array.isArray(d))throw 0;
+$("#mpl").innerHTML=(d.length?d.map(x=>`<div class="mp"><img ${x.image_url&&String(x.image_url).startsWith("https://")?`src="${esc(x.image_url)}"`:""} alt=""><div style="flex:1;min-width:0"><b>${esc(x.name)}</b><br><small>${inr(x.price)}</small><br><span class="st ${x.status=="live"?"live":""}">${x.status=="live"?"Live":x.status=="pending"?"Pending review":esc(x.status)}</span></div>${x.status=="pending"?`<button class="lnkb" data-delp="${x.id}">Delete</button>`:""}</div>`).join(""):`<p class="msg">No products yet.</p>`)+`<button class="cta" data-addp>Add a product</button>`}
+catch(e){$("#mpl").innerHTML=`<p class="msg">Could not load your products. Please try again.</p>`}}
+async function delProduct(id){if(!confirm("Delete this product?"))return;await refreshS();const r=await fetch(SB_URL+"/rest/v1/products?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:sh()});if(r.ok){toast("Deleted");myView()}else toast("Could not delete")}
+document.addEventListener("change",async e=>{if(e.target.id!="pimg")return;const f=e.target.files[0],pv=$("#pv");pBlob=null;pv.style.display="none";if(!f)return;if(!/^image\//.test(f.type))return er("Please choose a photo");
+try{pBlob=await prepImg(f);pv.src=URL.createObjectURL(pBlob);pv.style.display="block";er("")}catch(x){er("Could not read this photo. Please try another one.")}});
+
+async function adminView(){await refreshS();if(!S||S.role!="admin")return acctView();
+sheet(`<div class="sh"><h2>Admin panel</h2><button class="x" data-close aria-label="Close">✕</button></div><div class="sb"><button type="button" class="lnkb" data-acct>← My account</button><div id="adl"><p class="msg">Loading…</p></div></div>`);
+try{const [a,p,o]=await Promise.all([
+fetch(SB_URL+"/rest/v1/seller_applications?select=id,shop_name,phone,city&status=eq.pending&order=id",{headers:sh()}).then(r=>r.json()),
+fetch(SB_URL+"/rest/v1/products?select=id,name,price,mrp,seller_name,image_url,categories(name)&status=eq.pending&order=id",{headers:sh()}).then(r=>r.json()),
+fetch(SB_URL+"/rest/v1/order_items?select=seller_id,seller_name,commission,commission_gst,payout,payout_status&status=eq.delivered",{headers:sh()}).then(r=>r.json()).catch(()=>[])]);
+if(!Array.isArray(a)||!Array.isArray(p))throw 0;const payHtml=payBlock(Array.isArray(o)?o:[]);
+const btn=(k,id)=>`<button class="ap" data-act="${k}1" data-id="${id}">Approve</button><button class="ap no" data-act="${k}0" data-id="${id}">Reject</button>`;
+$("#adl").innerHTML=`<h3 class="ah">Sellers waiting (${a.length})</h3>`+(a.length?a.map(x=>`<div class="mp"><div style="flex:1;min-width:0"><b>${esc(x.shop_name)}</b><br><small>${esc(x.city)} · <a href="tel:${esc(x.phone)}">${esc(x.phone)}</a></small><br><small>Commission % <input id="cm${x.id}" inputmode="decimal" value="10" style="width:56px;padding:4px;border:1px solid var(--line);border-radius:8px"></small></div><div>${btn("s",x.id)}</div></div>`).join(""):`<p class="msg">No sellers waiting.</p>`)+
+`<h3 class="ah">Products waiting (${p.length})</h3>`+(p.length?p.map(x=>`<div class="mp"><img ${x.image_url&&String(x.image_url).startsWith("https://")?`src="${esc(x.image_url)}"`:""} alt=""><div style="flex:1;min-width:0"><b>${esc(x.name)}</b><br><small>${inr(x.price)}${x.mrp>x.price?" (MRP "+inr(x.mrp)+")":""}<br>by ${esc(x.seller_name||"Seller")}${x.categories?" · "+esc(LBL[x.categories.name]||x.categories.name):""}</small></div><div>${btn("p",x.id)}</div></div>`).join(""):`<p class="msg">No products waiting.</p>`)+payHtml}
+catch(e){$("#adl").innerHTML=`<p class="msg">Could not load. Please try again.</p>`}}
+async function adminAct(act,id,b){const sel=act[0]=="s",ok=act[1]=="1",cm=(sel&&ok)?parseFloat(($("#cm"+id)||{}).value):0;if(sel&&ok&&!(cm>=0&&cm<=40))return toast("Commission must be between 0 and 40");b.disabled=true;await refreshS();
+try{const r=await fetch(SB_URL+"/rest/v1/"+(sel?"seller_applications":"products")+"?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:{...sh(),"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(Object.assign({status:sel?(ok?"approved":"rejected"):(ok?"live":"rejected")},sel&&ok?{commission_pct:cm}:{}))});
+const d=await r.json().catch(()=>null);if(!r.ok||!Array.isArray(d)||!d.length)throw 0;
+toast(ok?"Approved":"Rejected");adminView()}catch(e){b.disabled=false;toast("Could not update")}}
+
+const OS={placed:"Placed",confirmed:"Confirmed",shipped:"Shipped",delivered:"Delivered",cancelled:"Cancelled"},NX={placed:"confirmed",confirmed:"shipped",shipped:"delivered"};
+function checkoutView(){const t=Object.entries(cart).reduce((a,[id,n])=>a+((P.find(p=>p.id==id)||{}).price||0)*n,0);
+sheet(`<div class="sh"><h2>Checkout</h2><button class="x" data-close aria-label="Close">✕</button></div><div class="sb"><form id="cof" novalidate>
+<label class="fld"><span>Full name</span><input id="ckn" value="${esc(S.user.name||"")}" maxlength="60" autocomplete="name"></label>
+<label class="fld"><span>Mobile number (10 digits)</span><input id="ckp" inputmode="numeric" maxlength="10" autocomplete="tel"></label>
+<label class="fld"><span>Full address (house, street, area)</span><input id="cka" maxlength="200" autocomplete="street-address"></label>
+<label class="fld"><span>City</span><input id="cky" maxlength="60"></label>
+<label class="fld"><span>Pincode (6 digits)</span><input id="ckz" inputmode="numeric" maxlength="6" autocomplete="postal-code"></label>
+<p class="by"><b>Total ${inr(t)}</b> · Pay by cash when your order is delivered.</p>
+<div class="err" id="aerr" role="alert"></div><button class="cta" type="submit">Place order</button></form></div>`)}
+async function doOrder(){await refreshS();if(!S)return authView("login");const v=["ckn","ckp","cka","cky","ckz"].map(i=>$("#"+i).value.trim());
+if(v[0].length<2)return er("Please enter your name");if(!/^[0-9]{10}$/.test(v[1]))return er("Please enter a 10-digit mobile number");if(v[2].length<8)return er("Please enter your full address");if(v[3].length<2)return er("Please enter your city");if(!/^[0-9]{6}$/.test(v[4]))return er("Please enter a 6-digit pincode");
+const b=$("#cof .cta");b.disabled=true;b.textContent="Placing order…";er("");
+try{const r=await fetch(SB_URL+"/rest/v1/rpc/place_order",{method:"POST",headers:{...sh(),"Content-Type":"application/json"},body:JSON.stringify({p_name:v[0],p_phone:v[1],p_address:v[2],p_city:v[3],p_pin:v[4],p_items:Object.entries(cart).map(([id,n])=>({id:+id,qty:n}))})});
+const j=await r.json().catch(()=>null);if(!r.ok||typeof j!="number")throw 0;
+cart={};count();sheet(`<div class="sh"><h2>Order placed</h2><button class="x" data-close aria-label="Close">✕</button></div><div class="sb"><p style="font-size:18px"><b>Thank you! Your order #${j} is placed.</b></p><p class="by">The seller will confirm it soon. Please keep cash ready at delivery.</p><button class="cta" data-mo>View my orders</button></div>`)}
+catch(e){b.disabled=false;b.textContent="Place order";er("Could not place your order. Please check your details and try again.")}}
+async function ordView(sell){await refreshS();if(!S)return authView("login");
+sheet(`<div class="sh"><h2>${sell?"Seller orders":"My orders"}</h2><button class="x" data-close aria-label="Close">✕</button></div><div class="sb"><button type="button" class="lnkb" data-acct>← My account</button><div id="ol"><p class="msg">Loading…</p></div></div>`);
+try{const q=sell?"order_items?select=id,order_id,name,price,qty,status,commission,commission_gst,payout,payout_status,orders(full_name,phone,address,city,pincode)&seller_id=eq.":"order_items?select=id,order_id,name,price,qty,status,seller_name&buyer_id=eq.";
+const d=await fetch(SB_URL+"/rest/v1/"+q+S.user.id+"&order=id.desc",{headers:sh()}).then(r=>r.json());if(!Array.isArray(d))throw 0;
+$("#ol").innerHTML=(sell?sellSum(d):"")+(d.length?d.map(x=>{const o=x.orders;return `<div class="mp" style="align-items:flex-start"><div style="flex:1;min-width:0"><b>${esc(x.name)}</b> × ${x.qty}<br><small>${inr(x.price*x.qty)} · Order #${x.order_id}</small>${o?`<br><small>${esc(o.full_name)}, <a href="tel:${esc(o.phone)}">${esc(o.phone)}</a><br>${esc(o.address)}, ${esc(o.city)} ${esc(o.pincode)}</small>`:""}<br><span class="st ${x.status=="delivered"?"live":""}">${OS[x.status]||esc(x.status)}</span>${sell&&x.status!="cancelled"?`<br><small>You earn <b>${inr(x.payout||0)}</b> after fees${x.payout_status=="paid"?" · Paid":x.status=="delivered"?" · Payout pending":""}</small>`:""}</div>${sell&&NX[x.status]?`<div><button class="ap" data-os="${x.id}:${NX[x.status]}">Mark ${OS[NX[x.status]]}</button>${x.status=="placed"?`<button class="ap no" data-os="${x.id}:cancelled">Cancel</button>`:""}</div>`:""}</div>`}).join(""):`<p class="msg">No orders yet.</p>`)}
+catch(e){$("#ol").innerHTML=`<p class="msg">Could not load orders. Please try again.</p>`}}
+async function osUpd(id,st){await refreshS();try{const r=await fetch(SB_URL+"/rest/v1/order_items?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:{...sh(),"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({status:st})});const d=await r.json().catch(()=>null);if(!r.ok||!Array.isArray(d)||!d.length)throw 0;toast("Updated");ordView(true)}catch(e){toast("Could not update")}}
+
+const LG={
+terms:["Terms of Use",[["About Mohalla Mart","Mohalla Mart is an online marketplace where independent sellers list fashion and local products and buyers can order them. Each product is sold by the seller named on its listing."],["Your account","Please give correct details and keep your password safe. You are responsible for activity on your account. Orders are for adults aged 18 and above."],["Orders and payment","For now we accept Cash on Delivery only. Prices are in Indian rupees. An order is confirmed when the seller confirms it. We or the seller may cancel an order if an item is out of stock, a price is wrong, or we suspect misuse."],["Delivery","Delivery times shown or told to you are estimates and may change."],["Sellers","Sellers must list only genuine products they have the right to sell, with true photos, prices and descriptions. Counterfeit, illegal or prohibited items are not allowed. Sellers must pack and ship orders promptly. We may remove listings or suspend accounts that break these rules."],["Responsibility","Sellers are responsible for the quality and description of their products. To the extent the law allows, Mohalla Mart is not liable for indirect losses."],["Changes and law","We may update these terms from time to time. These terms follow Indian law, and courts in Lucknow, Uttar Pradesh will have jurisdiction."]]],
+returns:["Returns & Refunds",[["When you can return","You can return an item within 7 days of delivery if it is wrong, damaged, defective or not as described. Unused, unworn items with original tags can also be returned within 7 days."],["What cannot be returned","Innerwear, beauty and personal-care items, personalised or made-to-order items, and items marked final sale."],["How to return","Message us on WhatsApp within 7 days with your order number and clear photos. We will tell you the next step and arrange the pickup or return with the seller."],["Refunds","Once the returned item is received and checked, we refund the item price to your bank account or UPI within 7 to 10 working days. Please share your payment details when we ask."],["Cancelling an order","You can cancel before the order is shipped by messaging us on WhatsApp. After it is shipped, you can refuse the parcel at delivery."]]],
+privacy:["Privacy",[["What we collect","Your name, email, mobile number, delivery address and order details. For sellers: shop name, phone and city."],["How we use it","To run your account, deliver your orders and give support. We share only what is needed to fulfil an order with the seller and the delivery partner."],["Safety","We do not sell your data. It is stored with our database provider, hosted in Mumbai, India."],["Your choices","You can ask us on WhatsApp to see, correct or delete your data."],["On your device","We save your login and wishlist on your device so the site works smoothly."]]]};
+function legalView(k){const t=LG[k];if(!t)return;const w=waLink();
+sheet(`<div class="sh"><h2>${t[0]}</h2><button class="x" data-close aria-label="Close">✕</button></div><div class="sb lg">${t[1].map(x=>`<h4>${x[0]}</h4><p>${x[1]}</p>`).join("")}${w?`<p style="margin-top:14px">Questions? <a href="${esc(w)}" target="_blank" rel="noopener">Message us on WhatsApp</a></p>`:""}</div>`)}
+
+function sellSum(d){let w=0,p=0;d.forEach(x=>{if(x.status=="delivered"){if(x.payout_status=="paid")p+=x.payout;else w+=x.payout}});return `<p class="by">Waiting for payout: <b>${inr(w)}</b> · Paid so far: <b>${inr(p)}</b></p>`}
+function payBlock(o){const g={};let ce=0,cg=0;o.forEach(x=>{ce+=x.commission;cg+=x.commission_gst;if(x.payout_status=="unpaid"&&x.seller_id){const k=g[x.seller_id]||(g[x.seller_id]={n:x.seller_name||"Seller",t:0,c:0});k.t+=x.payout;k.c++}});const ks=Object.keys(g);
+return `<h3 class="ah">Payouts</h3><p class="by">Your commission on delivered orders: <b>${inr(ce)}</b> + GST ${inr(cg)}</p>`+(ks.length?ks.map(k=>`<div class="mp"><div style="flex:1;min-width:0"><b>${esc(g[k].n)}</b><br><small>${g[k].c} delivered item(s) · owed <b>${inr(g[k].t)}</b></small></div><div><button class="ap" data-pay="${k}" data-amt="${g[k].t}">Mark paid</button></div></div>`).join(""):`<p class="msg">No payouts due.</p>`)}
+async function payOut(sid,amt,b){if(!confirm("Mark "+inr(amt)+" as paid to this seller? Do this only after you have sent the money."))return;b.disabled=true;await refreshS();try{const r=await fetch(SB_URL+"/rest/v1/rpc/mark_seller_paid",{method:"POST",headers:{...sh(),"Content-Type":"application/json"},body:JSON.stringify({sid})});if(!r.ok)throw 0;toast("Marked as paid");adminView()}catch(e){b.disabled=false;toast("Could not update")}}
+async function logout(){const t=S&&S.access_token;S=null;saveS();acctBtn();close();toast("Logged out");if(t){try{await fetch(SB_URL+"/auth/v1/logout",{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+t}})}catch(e){}}}
+const TILES=[["Fashion","#f7d9c4"],["Accessories","#e4e0f4"],["Home","#d8e9e4"],["Gifting","#f6d0da"]];
+const LBL={All:"All",Fashion:"Fashion",Accessories:"Accessories",Home:"Home & Living",Gifting:"Gifts",Beauty:"Beauty"};
+function chips(){const ks=["All",...TILES.map(t=>t[0]).filter(k=>P.some(p=>p.cat==k))];$("#cats").innerHTML=ks.map(c=>`<button class="pill" aria-pressed="${c==cat}" data-c="${c}">${LBL[c]}</button>`).join("")}
+function tiles(){const t=TILES.filter(t=>P.some(p=>p.cat==t[0]));
+$("#tiles").innerHTML=t.length?`<div class="sec"><h2>Shop by Category</h2></div><div class="tg">${t.map(([k,bg])=>{const n=P.filter(p=>p.cat==k).length,im=(typeof CAT_IMG==="object"&&CAT_IMG&&typeof CAT_IMG[k]==="string"&&CAT_IMG[k].startsWith("https://"))?CAT_IMG[k]:"";return `<button class="tile" data-t="${k}"><div class="tp" style="background:${bg}">${CATI[k]}${im?`<img src="${esc(im)}" alt="" loading="lazy" onerror="this.remove()">`:""}</div><span class="l">${LBL[k]}</span><small>${n} item${n>1?"s":""}</small></button>`}).join("")}</div>`:""}
+function grid(){
+const l=P.filter(p=>(cat=="All"||p.cat==cat)&&(p.name+p.cat+p.by).toLowerCase().includes(q.toLowerCase()));
+$("#ttl").textContent=q?`Results for “${q}”`:(cat=="All"?"Trending now":(LBL[cat]||cat));
+$("#cnt").textContent=l.length+" items";
+$("#g").innerHTML=l.length?l.map(p=>`<article class="card"><div class="art" style="background:${BG[p.cat]||"#eee"}">${thumb(p)}${p.mrp>p.price?`<span class="off">${Math.round(100-p.price/p.mrp*100)}% off</span>`:""}</div>
+<div class="info"><div class="nm">${esc(p.name)}</div><div class="by">by ${esc(p.by)}</div>
+<div class="pr">${inr(p.price)}${p.mrp>p.price?`<s>${inr(p.mrp)}</s>`:""}</div>
+<button class="add" data-add="${p.id}">Add to cart</button></div></article>`).join(""):`<div class="msg">No products found. Try a different word or category.</div>`}
+function count(){$("#cn").textContent=Object.values(cart).reduce((a,b)=>a+b,0)}
+function sheet(h){$("#sheet").innerHTML=h;$("#sheet").classList.add("on");$("#scrim").classList.add("on")}
+function close(){$("#sheet").classList.remove("on");$("#scrim").classList.remove("on")}
+function cartView(){
+const l=Object.entries(cart).map(([id,n])=>({...P.find(p=>p.id==id),n})),t=l.reduce((a,x)=>a+x.price*x.n,0);
+sheet(`<div class="sh"><h2>Your cart</h2><button class="x" data-close aria-label="Close">✕</button></div>
+<div class="sb">${l.length?l.map(x=>`<div class="ln"><div><b>${esc(x.name)}</b><br><small>${inr(x.price)}</small></div>
+<div class="q"><button data-dec="${x.id}" aria-label="Fewer">−</button><span>${x.n}</span><button data-inc="${x.id}" aria-label="More">+</button></div></div>`).join(""):`<p class="msg">Your cart is empty.</p>`}</div>
+<div class="sf"><div class="tot"><span>Total</span><span>${inr(t)}</span></div>${l.length?`<button class="cta" data-co>Place order (Cash on Delivery)</button>`:""}</div>`)}
+function nav(i){["n1","n2","n3","n4"].forEach((id,k)=>$("#"+id).classList.toggle("on",k==i))}
+document.addEventListener("click",e=>{const b=e.target.closest("button,.scrim");if(!b)return;const d=b.dataset;
+if(d.c){cat=d.c;chips();grid()}
+else if(d.t){cat=d.t;chips();grid();$("#ttl").scrollIntoView({behavior:"smooth",block:"start"})}
+else if(d.am){authView(d.am)}
+else if(d.ak){authView("signup","",d.ak)}
+else if(d.apply!==undefined){applyView()}
+else if(d.addp!==undefined){addView()}
+else if(d.lg){legalView(d.lg)}
+else if(d.co!==undefined){S?checkoutView():authView("login","Please log in to place your order")}
+else if(d.mo!==undefined){ordView(false)}
+else if(d.so!==undefined){ordView(true)}
+else if(d.os){const a=d.os.split(":");osUpd(a[0],a[1])}
+else if(d.adm!==undefined){adminView()}
+else if(d.act){adminAct(d.act,d.id,b)}
+else if(d.pay){payOut(d.pay,d.amt,b)}
+else if(d.myp!==undefined){myView()}
+else if(d.acct!==undefined){acctView()}
+else if(d.delp){delProduct(d.delp)}
+else if(b.id=="ab"){S?acctView():authView("login")}
+else if(d.logout!==undefined){logout()}
+else if(d.add){cart[d.add]=(cart[d.add]||0)+1;count();toast("Added to cart")}
+else if(d.inc){cart[d.inc]++;count();cartView()}
+else if(d.dec){if(--cart[d.dec]<1)delete cart[d.dec];count();cartView()}
+else if(d.close!==undefined||b.id=="scrim"){close();nav(0)}
+else if(b.id=="cb"||b.id=="n3"){nav(2);cartView()}
+else if(b.id=="n1"){nav(0);window.scrollTo({top:0})}
+else if(b.id=="n2"){nav(1);$("#tiles").scrollIntoView({behavior:"smooth",block:"start"})}
+else if(b.id=="n4"){nav(3);contactView()}
+else if(d.w){const k=String(d.w);wish.has(k)?wish.delete(k):wish.add(k);saveW();toast(wish.has(k)?"Saved":"Removed");grid()}
+else if(b.id=="shop"){cat="All";chips();grid();$("#ttl").scrollIntoView({behavior:"smooth",block:"start"})}});
+$("#q").addEventListener("input",e=>{q=e.target.value;grid()});
+document.addEventListener("submit",e=>{if(e.target.id=="af"){e.preventDefault();doAuth(e.target.dataset.mode,e.target.dataset.kind)}else if(e.target.id=="pf"){e.preventDefault();doApply()}else if(e.target.id=="prf"){e.preventDefault();doAddProduct()}else if(e.target.id=="cof"){e.preventDefault();doOrder()}});
+chips();
+const wl=waLink();if(wl){const a=$("#wa");a.href=wl;a.style.display="grid"}
+acctBtn();refreshS().then(loadRole).then(acctBtn);
+const BI=(typeof BANNER_IMG==="string"&&BANNER_IMG.startsWith("https://"))?BANNER_IMG:"";
+if(BI){const b=$(".hero");b.classList.add("photo");b.style.setProperty("--bi",'url("'+BI.replace(/"/g,"")+'")')}
+const H={headers:{apikey:KEY,Authorization:"Bearer "+KEY}},U=SB_URL+"/rest/v1/products?select=",T="&status=eq.live&order=id";
+fetch(U+"id,name,price,mrp,seller_name,image_url,categories(name)"+T,H).then(r=>r.json())
+.then(d=>Array.isArray(d)?d:fetch(U+"id,name,price,mrp,seller_name,categories(name)"+T,H).then(r=>r.json()))
+.then(d=>{
+if(!Array.isArray(d))throw 0;
+P=d.map(x=>({id:x.id,name:x.name,price:x.price,mrp:x.mrp,by:x.seller_name||"Seller",cat:x.categories?x.categories.name:"",img:(x.image_url&&String(x.image_url).startsWith("https://"))?x.image_url:""}));chips();tiles();grid()})
+.catch(()=>{$("#g").innerHTML='<div class="msg">Could not load products. Please try again.</div>'});
+if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js")}
+</script></body></html>
